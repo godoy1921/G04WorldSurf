@@ -1,14 +1,14 @@
-package ventanas;
+package gui;
 
 import javax.swing.*;
 
-public class ventanaInicio extends JFrame {
-    public ventanaInicio() {
-        JFrame frame = new JFrame("Ventana de Inicio");
+public class ventanaCompeticion {
+    public ventanaCompeticion() {
+        JFrame frame = new JFrame("Ventana de Competición");
         frame.setSize(600, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JLabel label = new JLabel("Bienvenido a la aplicación de surf");
+        JLabel label = new JLabel("Simulación de Competición de Surf");
         JPanel panel = new JPanel();
         panel.add(label);
         frame.add(panel);
@@ -16,3 +16,4 @@ public class ventanaInicio extends JFrame {
         frame.setVisible(true);
     }
 }
+

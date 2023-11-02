@@ -2,7 +2,7 @@ package main;
 
 import javax.swing.SwingUtilities;
 
-import ventanas.interfazGrafica;
+import gui.interfazGrafica;
 
 public class main {
 
