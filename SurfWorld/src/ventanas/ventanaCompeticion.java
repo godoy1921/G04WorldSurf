@@ -3,7 +3,7 @@ package ventanas;
 import javax.swing.*;
 
 public class ventanaCompeticion {
-    public static void main(String[] args) {
+    public ventanaCompeticion() {
         JFrame frame = new JFrame("Ventana de Competición");
         frame.setSize(600, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

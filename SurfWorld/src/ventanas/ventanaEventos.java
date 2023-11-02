@@ -3,7 +3,7 @@ package ventanas;
 import javax.swing.*;
 
 public class ventanaEventos {
-    public static void main(String[] args) {
+    public ventanaEventos() {
         JFrame frame = new JFrame("Ventana de Eventos");
         frame.setSize(600, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

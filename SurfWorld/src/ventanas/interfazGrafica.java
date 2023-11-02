@@ -18,9 +18,9 @@ public class interfazGrafica {
             JPanel panel = new JPanel();
             frame.add(panel);
 
-	        JButton inicioButton = new JButton("Ir a la ventana de Inicio");
-	        JButton eventosButton = new JButton("Ir a la ventana de Eventos");
-	        JButton competicionButton = new JButton("Ir a la ventana de Competición");
+	        JButton inicioButton = new JButton("Inicio");
+	        JButton eventosButton = new JButton("Eventos");
+	        JButton competicionButton = new JButton("Competición");
 	
 	        inicioButton.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
