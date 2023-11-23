@@ -14,11 +14,4 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>resources/surfistas</name>
-			<type>1</type>
-			<location>C:/4º Curso/Programacion 3/Proyecto/surfistas.csv</location>
-		</link>
-	</linkedResources>
 </projectDescription>
