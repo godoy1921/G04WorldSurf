@@ -7,16 +7,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import domain.Evento;
+import domain.ResultadoEvento;
+import domain.Surfista;
 
 
-public class cargaEvento {
+public class cargaResultadoEvento {
 	
-	public static List<Evento> cargarEventos() {
-        String csvFile = "resources\\Eventos.csv";
+	public static void main(String[] args) {
+        String csvFile = "resources\\resultadoEventos.csv";
         String line = "";
         String cvsSplitBy = ",";
 
-        List<Evento> eventos = new ArrayList<>();
+        List<Evento> resultadoEventos = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             br.readLine(); // Ignorar la primera línea (encabezados)
@@ -26,13 +28,20 @@ public class cargaEvento {
 
                 // Verificar si hay suficientes datos antes de intentar procesar la línea
                 if (datos.length >= 4) {
-                    int idEvento = Integer.parseInt(datos[0]);
-                    String nombre = datos[1];
-                    String fechaInicio = datos[2];
-                    String fechaFin = datos[3];
+                    int idResultadoEvento = Integer.parseInt(datos[0]);
+                    String nombreEvento = datos[1];
+                    String nombreSurfista = datos[2];
+                    int resultado = Integer.parseInt(datos[3]);
+                    
+                    List<Evento> eventos = cargaEvento.cargarEventos();
+                    for(Evento evento: eventos) {
+                    	if(evento.getNombre().equals(nombreEvento)) {
+                    		Evento eventoX = evento;
+                    	}
+                    }
 
                     // Crear objeto Evento y agregarlo a la lista
-                    Evento evento = new Evento(idEvento, nombre, fechaInicio, fechaFin, null);
+                    ResultadoEvento resultadoEvento = new ResultadoEvento(idResultadoEvento, eventoX, surfista, resultado, null);
                     eventos.add(evento);
                 } else {
                     System.out.println("Error en línea: " + line);
@@ -46,8 +55,6 @@ public class cargaEvento {
         for (Evento evento : eventos) {
             System.out.println(evento);
         }
-        
-        return eventos;
     }
 
 }
