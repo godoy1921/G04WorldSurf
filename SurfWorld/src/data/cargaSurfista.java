@@ -23,6 +23,12 @@ public class cargaSurfista {
         	
             while ((line = br.readLine()) != null) {
                 String[] datos = line.split(cvsSplitBy);
+                
+                //for (String dato : datos) {
+                    //System.out.println("Dato: " + dato + datos[2]);
+                //}
+                //System.out.println("Dato: " + datos[1]);
+                
                 int id = Integer.parseInt(datos[0]);
                 String nombre = datos[1];
                 String pais = datos[2];
