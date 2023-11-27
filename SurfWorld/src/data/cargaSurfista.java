@@ -10,7 +10,7 @@ import domain.Surfista;
 
 
 public class cargaSurfista {
-    public static void main(String[] args) {
+    public static ArrayList<Surfista> cargarSurfistas() {
         String csvFile = "resources\\surfistas.csv";
         String line = "";
         String cvsSplitBy = ",";
@@ -43,8 +43,10 @@ public class cargaSurfista {
         }
 
         // Imprimir la lista de surfistas creados
-        for (Surfista surfista : surfistas) {
-            System.out.println(surfista);
-        }
+        //for (Surfista surfista : surfistas) {
+            //System.out.println(surfista);
+        //}
+        
+        return surfistas;
     }
 }

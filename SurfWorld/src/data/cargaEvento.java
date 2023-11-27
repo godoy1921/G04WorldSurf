@@ -43,9 +43,9 @@ public class cargaEvento {
         }
 
         // Imprimir la lista de eventos creados
-        for (Evento evento : eventos) {
-            System.out.println(evento);
-        }
+        //for (Evento evento : eventos) {
+            //System.out.println(evento);
+        //}
         
         return eventos;
     }

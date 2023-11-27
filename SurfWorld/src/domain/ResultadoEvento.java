@@ -49,7 +49,7 @@ public class ResultadoEvento {
 
 	@Override
 	public String toString() {
-		return "ResultadoEvento [evento=" + evento + ", surfista=" + surfista + ", posicion=" + posicion + "]";
+		return "ResultadoEvento [evento=" + evento.getNombre() + ", surfista=" + surfista.getNombre() + ", posicion=" + posicion + "]";
 	}
 
 	@Override
