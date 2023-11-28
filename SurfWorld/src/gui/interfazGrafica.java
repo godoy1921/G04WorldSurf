@@ -26,7 +26,8 @@ public class interfazGrafica {
 	            public void actionPerformed(ActionEvent e) {
 	            	SwingUtilities.invokeLater(new Runnable() {
 	                    public void run() {
-	                    	new ventanaInicio();
+	                    	ventanaInicio ventana = new ventanaInicio();
+	                        ventana.setVisible(true);
 	                    }
 	                    
 	        		});
