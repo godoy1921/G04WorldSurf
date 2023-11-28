@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import domain.Evento;
+import domain.Surfista;
+
 
 
 public class cargaEvento {
@@ -30,9 +32,25 @@ public class cargaEvento {
                     String nombre = datos[1];
                     String fechaInicio = datos[2];
                     String fechaFin = datos[3];
+                    
+                    List<Surfista> surfistasEvento = new ArrayList<Surfista>();
+                    
+                    
+                    	
+                  //Se crea un surfista por cada id
+        			for (int i=4; i<datos.length; i++) {
+        				//Sólo se da valor al atributo id del surfista
+        				
+        				List<Surfista> surfistas = cargaSurfista.cargarSurfistas();
+        				for(Surfista surfista: surfistas) {
+                        	if(surfista.getIdSurfista() == Integer.parseInt(datos[i])) {
+                        		surfistasEvento.add(surfista);
+        			}
+        				}
+        			}
 
                     // Crear objeto Evento y agregarlo a la lista
-                    Evento evento = new Evento(idEvento, nombre, fechaInicio, fechaFin, null);
+                    Evento evento = new Evento(idEvento, nombre, fechaInicio, fechaFin, surfistasEvento);
                     eventos.add(evento);
                 } else {
                     System.out.println("Error en línea: " + line);
