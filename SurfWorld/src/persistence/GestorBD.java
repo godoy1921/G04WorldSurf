@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import data.cargaEvento;
 import data.cargaSurfista;
 import domain.Evento;
+import domain.ResultadoEvento;
 import domain.Surfista;
 
 
@@ -82,21 +83,22 @@ public class GestorBD {
 	                + " idSurfista INTEGER PRIMARY KEY,\n"
 	                + " nombre TEXT NOT NULL,\n"
 	                + " paisOrigen TEXT NOT NULL,\n"
-	                + " puestoRanking INTEGER NOT NULL,\n"
+	                + " puestoRanking INTEGER,\n"
 	                + " UNIQUE(nombre));";
 	
 			String sql2 = "CREATE TABLE IF NOT EXISTS Evento (\n"
 	                + " idEvento INTEGER PRIMARY KEY,\n"
-	                + " editorial TEXT NOT NULL,\n"
-	                + " titulo TEXT UNIQUE NOT NULL\n"
+	                + " nombre TEXT NOT NULL,\n"
+	                + " fechaInicio TEXT NOT NULL\n"
+	                + " fechaFin TEXT NOT NULL\n"
+	                + " participantes TEXT NOT NULL\n"
 	                + ");";
 	
-			String sql3 = "CREATE TABLE IF NOT EXISTS Personajes_Comic (\n"
-	                + " id_comic INTEGER,\n"
-	                + " id_personaje INTEGER,\n"
-	                + " PRIMARY KEY(id_comic, id_personaje)\n"
-	                + " FOREIGN KEY(id_comic) REFERENCES Comic(id) ON DELETE CASCADE\n"
-	                + " FOREIGN KEY(id_personaje) REFERENCES Personaje(id) ON DELETE CASCADE\n"
+			String sql3 = "CREATE TABLE IF NOT EXISTS ResultadoEvento (\n"
+	                + " idResultado INTEGER,\n"
+	                + " evento TEXT NOT NULL,\n"
+	                + " surfista TEXT NOT NULL,\n"
+	                + " posicion INTEGER,\n"
 	                + ");";
 			
 	        //Se abre la conexión y se crea un PreparedStatement para crer cada tabla
@@ -175,16 +177,16 @@ public class GestorBD {
 				}
 			}
 			
-			logger.info(String.format("%d Personajes insertados en la BBDD", surfistas.length));
+			logger.info(String.format("%d Surfistas insertados en la BBDD", surfistas.length));
 		} catch (Exception ex) {
-			logger.warning(String.format("Error al insertar personajes: %s", ex.getMessage()));
+			logger.warning(String.format("Error al insertar surfistas: %s", ex.getMessage()));
 		}			
 	}
 	
 	
 	public void insertarEvento(Evento... eventos) {
 		//Se define la plantilla de la sentencia SQL			
-		String sql = "INSERT INTO Evento (idEvento, nombre, fechaInicio, fechaFin, ) VALUES (?, ?, ?, ?);";
+		String sql = "INSERT INTO Evento (idEvento, nombre, fechaInicio, fechaFin, participantes) VALUES (?, ?, ?, ?, ?);";
 		
 		//Se abre la conexión y se crea el PreparedStatement con la sentencia SQL
 		try (Connection con = DriverManager.getConnection(connectionString);
@@ -224,11 +226,43 @@ public class GestorBD {
 			
 			logger.info(String.format("%d Eventos insertados en la BBDD", eventos.length));
 		} catch (Exception ex) {
-			logger.warning(String.format("Error al insertar comics: %s", ex.getMessage()));
+			logger.warning(String.format("Error al insertar eventos: %s", ex.getMessage()));
 		}				
 	}
 	
 	//metodo para insertar resultadoEvento	
+	/**
+	 * Inserta resultadoEvento en la BBDD
+	 */
+	public void insertarResultadoEvento(ResultadoEvento... resultadoEventos) {
+		//Se define la plantilla de la sentencia SQL
+		String sql = "INSERT INTO ResultadoEvento (idResultado, evento, surfista, posicion) VALUES (?, ?, ?, ?);";
+		
+		//Se abre la conexión y se crea el PreparedStatement con la sentencia SQL
+		try (Connection con = DriverManager.getConnection(connectionString);
+			 PreparedStatement pStmt = con.prepareStatement(sql)) {
+									
+			//Se recorren los clientes y se insertan uno a uno
+			for (ResultadoEvento r : resultadoEventos) {
+				//Se añaden los parámetros al PreparedStatement
+				pStmt.setString(1, Integer.toString(r.getIdResultado()));
+				pStmt.setString(2, String.valueOf(r.getEvento()));
+				pStmt.setString(3, String.valueOf(r.getSurfista()));
+				pStmt.setString(4, Integer.toString(r.getPosicion()));
+				
+				if (pStmt.executeUpdate() != 1) {					
+					logger.warning(String.format("No se ha insertado el ResultadoEvento: %s", r));
+				} else {
+						
+					logger.info(String.format("Se ha insertado el ResultadoEvento: %s", r));
+				}
+			}
+			
+			logger.info(String.format("%d ResultadoEvento insertados en la BBDD", resultadoEventos.length));
+		} catch (Exception ex) {
+			logger.warning(String.format("Error al insertar ResultadoEvento: %s", ex.getMessage()));
+		}			
+	}
 	
 
 }
