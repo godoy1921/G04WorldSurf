@@ -2,9 +2,13 @@ package persistence;
 
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.LogManager;
@@ -15,6 +19,10 @@ import data.cargaSurfista;
 import domain.Evento;
 import domain.ResultadoEvento;
 import domain.Surfista;
+import es.deusto.prog3.jdbc.p2.domain.Comic;
+import es.deusto.prog3.jdbc.p2.domain.Personaje;
+import es.deusto.prog3.jdbc.p2.domain.Personaje.Editorial;
+
 
 
 
@@ -114,6 +122,41 @@ public class GestorBD {
 		        }
 			} catch (Exception ex) {
 				logger.warning(String.format("Error al crear las tablas: %s", ex.getMessage()));
+			}
+		}
+	}
+	
+	
+	/**
+	 * Borra las tablas y el fichero de la BBDD.
+	 */
+	public void borrarBBDD() {
+		//Sólo se borra la BBDD si la propiedad deleteBBDD es true
+		if (properties.get("deleteBBDD").equals("true")) {	
+			String sql1 = "DROP TABLE IF EXISTS Surfista;";
+			String sql2 = "DROP TABLE IF EXISTS Evento";
+			String sql3 = "DROP TABLE IF EXISTS ResultadoEvento;";
+			
+	        //Se abre la conexión y se crea un PreparedStatement para borrar cada tabla
+			try (Connection con = DriverManager.getConnection(connectionString);
+			     PreparedStatement pStmt1 = con.prepareStatement(sql1);
+				 PreparedStatement pStmt2 = con.prepareStatement(sql2);
+				 PreparedStatement pStmt3 = con.prepareStatement(sql3)) {
+				
+				//Se ejecutan las sentencias de borrado de las tablas
+		        if (!pStmt1.execute() && !pStmt2.execute() && !pStmt3.execute()) {
+		        	logger.info("Se han borrado las tablas");
+		        }
+			} catch (Exception ex) {
+				logger.warning(String.format("Error al borrar las tablas: %s", ex.getMessage()));
+			}
+			
+			try {
+				//Se borra físicamente el fichero de la BBDD
+				Files.delete(Paths.get(databaseFile));
+				logger.info("Se ha borrado el fichero de la BBDD");
+			} catch (Exception ex) {
+				logger.warning(String.format("Error al borrar el fichero de la BBDD: %s", ex.getMessage()));
 			}
 		}
 	}
@@ -262,6 +305,127 @@ public class GestorBD {
 		} catch (Exception ex) {
 			logger.warning(String.format("Error al insertar ResultadoEvento: %s", ex.getMessage()));
 		}			
+	}
+	
+	
+	/**
+	 * Recupera los Surfistas de la BBDD.
+	 */
+	public List<Surfista> getSurfistas() {
+		List<Surfista> surfistas = new ArrayList<>();
+		String sql = "SELECT * FROM Surfista";
+		
+		//Se abre la conexión y se crea el PreparedStatement con la sentencia SQL
+		try (Connection con = DriverManager.getConnection(connectionString);
+		     PreparedStatement pStmt = con.prepareStatement(sql)) {			
+			
+			//Se ejecuta la sentencia y se obtiene el ResultSet
+			ResultSet rs = pStmt.executeQuery();			
+			Surfista surfista;
+			
+			//Se recorre el ResultSet y se crean objetos
+			while (rs.next()) {
+				surfista = new Surfista(rs.getInt("idSurfista"), 
+						rs.getString("nombre"), 
+						rs.getString("paisOrigen"), 
+						rs.getInt("puestoRanking"));
+				
+				//Se inserta cada nuevo cliente en la lista de clientes
+				surfistas.add(surfista);
+			}
+			
+			//Se cierra el ResultSet
+			rs.close();
+			
+			logger.info(String.format("Se han recuperado %d surfistas.", surfistas.size()));			
+		} catch (Exception ex) {
+			logger.warning(String.format("Error recuperar los surfistas: %s", ex.getMessage()));						
+		}		
+		
+		return surfistas;
+	}
+	
+	/**
+	 * Recupera de la BBDD un Personaje a partir de su ID 
+	 */
+	public Surfista getSurfistaById(int id) {
+		Surfista surfista = null;
+		String sql = "SELECT * FROM Surfista WHERE idSurfista = ? LIMIT 1";
+		
+		//Se abre la conexión y se crea el PreparedStatement con la sentencia SQL
+		try (Connection con = DriverManager.getConnection(connectionString);
+		     PreparedStatement pStmt = con.prepareStatement(sql)) {			
+			
+			//Se definen los parámetros de la sentencia SQL
+			pStmt.setInt(1, id);
+			
+			//Se ejecuta la sentencia y se obtiene el ResultSet
+			ResultSet rs = pStmt.executeQuery();			
+
+			//Se procesa el único resultado
+			if (rs.next()) {
+				surfista = new Surfista(rs.getInt("idSurfista"), 
+						rs.getString("nombre"), 
+						rs.getString("paisOrigen"), 
+						rs.getInt("puestoRanking"));
+			}
+			
+			//Se cierra el ResultSet
+			rs.close();
+			
+			logger.info(String.format("Se ha recuperado el surfista %s", surfista));			
+		} catch (Exception ex) {
+			logger.warning(String.format("Error recuperar los surfistas con id %d: %s", id, ex.getMessage()));						
+		}		
+		
+		return surfista;
+	}
+	
+	/**
+	 * Recupera los Eventos de la BBDD. 
+	 */
+	public List<Evento> getEventos() {
+		List<Evento> eventos = new ArrayList<>();
+		String sql = "SELECT * FROM Evento";
+		
+		//Se abre la conexión y se crea el PreparedStatement con la sentencia SQL
+		try (Connection con = DriverManager.getConnection(connectionString);
+		     PreparedStatement pStmt = con.prepareStatement(sql)) {			
+			
+			//Se ejecuta la sentencia y se obtiene el ResultSet con los resutlados
+			ResultSet rs = pStmt.executeQuery();			
+			Evento evento;
+			
+			//Se recorre el ResultSet y se crean los Comics
+			while (rs.next()) {
+				evento = new Evento(rs.getInt("idEvento"), 
+							rs.getString("nombre"),
+							rs.getString("fechaInicio"),
+							rs.getString("fechaFin"),
+							null);
+				
+				//Se recuperan los IDs de los personajes del Comic
+				List<Integer> idsSurfista = this.getIdsPersonajesComic(comic);
+				
+				//A partir de los IDs, se van recuperando los personajes de la BBDD
+				//y se añaden al comic.
+				for(int id : idsSurfista) {
+					evento.addParticipante(this.getSurfistaById(id));
+				}
+				
+				//Se inserta cada nuevo cliente en la lista de clientes
+				eventos.add(evento);
+			}
+			
+			//Se cierra el ResultSet
+			rs.close();
+			
+			logger.info(String.format("Se han recuperado %d comics", comics.size()));			
+		} catch (Exception ex) {
+			logger.warning(String.format("Error recuperar los comics: %s", ex.getMessage()));						
+		}		
+		
+		return comics;
 	}
 	
 

@@ -3,6 +3,8 @@ package domain;
 import java.util.List;
 import java.util.Objects;
 
+
+
 public class Evento {
     private int idEvento;
     private String nombre;
@@ -57,6 +59,12 @@ public class Evento {
     public void setParticipantes(List<Surfista> participantes) {
         this.participantes = participantes;
     }
+    
+    public void addParticipante(Surfista surfista) {
+		if (surfista != null && !this.participantes.contains(surfista)) {
+			participantes.add(surfista);
+		}
+	}
 
 	@Override
 	public int hashCode() {
