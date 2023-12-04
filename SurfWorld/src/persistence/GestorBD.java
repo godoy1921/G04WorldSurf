@@ -19,9 +19,6 @@ import data.cargaSurfista;
 import domain.Evento;
 import domain.ResultadoEvento;
 import domain.Surfista;
-import es.deusto.prog3.jdbc.p2.domain.Comic;
-import es.deusto.prog3.jdbc.p2.domain.Personaje;
-import es.deusto.prog3.jdbc.p2.domain.Personaje.Editorial;
 
 
 
@@ -397,35 +394,50 @@ public class GestorBD {
 			Evento evento;
 			
 			//Se recorre el ResultSet y se crean los Comics
+			
+			
 			while (rs.next()) {
+				
+				String[] surfistasSeparados = rs.getString("participantes").split(";");
+				
+				ArrayList<Surfista> listaSurfistas = new ArrayList<>();
+
+				// Recorrer cada parte separada (cada surfista)
+				for (String surfistaInfo : surfistasSeparados) {
+				    // Dividir la información de cada surfista por el guion
+				    String[] info = surfistaInfo.split("-");
+
+				    // Parsear los datos para crear un objeto Surfista
+				    int id = Integer.parseInt(info[0]);
+				    String nombre = info[1];
+				    String pais = info[2];
+				    int ranking = Integer.parseInt(info[3]);
+
+				    // Crear el objeto Surfista y agregarlo a la lista
+				    Surfista surfista = new Surfista(id, nombre, pais, ranking);
+				    listaSurfistas.add(surfista);
+				}
+				
 				evento = new Evento(rs.getInt("idEvento"), 
 							rs.getString("nombre"),
 							rs.getString("fechaInicio"),
 							rs.getString("fechaFin"),
-							null);
+							listaSurfistas);
 				
-				//Se recuperan los IDs de los personajes del Comic
-				List<Integer> idsSurfista = this.getIdsPersonajesComic(comic);
-				
-				//A partir de los IDs, se van recuperando los personajes de la BBDD
-				//y se añaden al comic.
-				for(int id : idsSurfista) {
-					evento.addParticipante(this.getSurfistaById(id));
-				}
 				
 				//Se inserta cada nuevo cliente en la lista de clientes
 				eventos.add(evento);
 			}
-			
 			//Se cierra el ResultSet
 			rs.close();
-			
-			logger.info(String.format("Se han recuperado %d comics", comics.size()));			
-		} catch (Exception ex) {
-			logger.warning(String.format("Error recuperar los comics: %s", ex.getMessage()));						
+		
+	
+			logger.info(String.format("Se han recuperado %d eventos", eventos.size()));			
+		}catch (Exception ex) {
+			logger.warning(String.format("Error recuperar los eventos: %s", ex.getMessage()));						
 		}		
 		
-		return comics;
+		return eventos;
 	}
 	
 
