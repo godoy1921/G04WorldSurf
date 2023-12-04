@@ -25,7 +25,7 @@ import domain.Surfista;
 
 public class GestorBD {
 	
-	private final String PROPERTIES_FILE = "conf/app.properties";
+	private final String PROPERTIES_FILE = "surfworld/conf/app.properties";
 	private final String CSV_SURFISTAS = "resources/surfistas.csv";
 	private final String CSV_EVENTOS = "resources/Eventos.csv";
 	private final String CSV_RESULTADOEVENTOS = "resources/resultadoEventos.csv";
@@ -38,7 +38,7 @@ public class GestorBD {
 	private static Logger logger = Logger.getLogger(GestorBD.class.getName());
 	
 	public GestorBD() {
-		try (FileInputStream fis = new FileInputStream("conf/logger.properties")) {
+		try (FileInputStream fis = new FileInputStream("surfworld\\conf\\logger.properties")) {
 			//Inicialización del Logger
 			LogManager.getLogManager().readConfiguration(fis);
 			
@@ -66,16 +66,16 @@ public class GestorBD {
 			//Se borran los datos, si existía alguno
 			this.borrarDatos();
 			
-			//Se leen los personajes del CSV
+			//Se leen los surfistas del CSV
 			List<Surfista> surfistas = cargaSurfista.cargarSurfistas();
-			//Se insertan los personajes en la BBDD
+			//Se insertan los surfistas en la BBDD
 			this.insertarSurfista(surfistas.toArray(new Surfista[surfistas.size()]));
 			
-			//Se leen los comics del CSV
+			//Se leen los eventos del CSV
 			List<Evento> eventos = cargaEvento.cargarEventos();				
 			
 			
-			//Se insertan los comics en la BBDD
+			//Se insertan los eventos en la BBDD
 			this.insertarEvento(eventos.toArray(new Evento[eventos.size()]));				
 		}
 	}
@@ -83,7 +83,7 @@ public class GestorBD {
 	public void crearBBDD() {
 		//Sólo se crea la BBDD si la propiedad initBBDD es true.
 		if (properties.get("createBBDD").equals("true")) {
-			//La base de datos tiene 3 tablas: Personaje, Comic y Personajes_Comic
+			//La base de datos tiene 3 tablas: Surfista, Evento y ResultadoEvento
 			String sql1 = "CREATE TABLE IF NOT EXISTS Surfista (\n"
 	                + " idSurfista INTEGER PRIMARY KEY,\n"
 	                + " nombre TEXT NOT NULL,\n"
@@ -94,8 +94,8 @@ public class GestorBD {
 			String sql2 = "CREATE TABLE IF NOT EXISTS Evento (\n"
 	                + " idEvento INTEGER PRIMARY KEY,\n"
 	                + " nombre TEXT NOT NULL,\n"
-	                + " fechaInicio TEXT NOT NULL\n"
-	                + " fechaFin TEXT NOT NULL\n"
+	                + " fechaInicio TEXT NOT NULL,\n"
+	                + " fechaFin TEXT NOT NULL,\n"
 	                + " participantes TEXT NOT NULL\n"
 	                + ");";
 	
@@ -103,7 +103,7 @@ public class GestorBD {
 	                + " idResultado INTEGER,\n"
 	                + " evento TEXT NOT NULL,\n"
 	                + " surfista TEXT NOT NULL,\n"
-	                + " posicion INTEGER,\n"
+	                + " posicion INTEGER \n"
 	                + ");";
 			
 	        //Se abre la conexión y se crea un PreparedStatement para crer cada tabla
@@ -187,7 +187,7 @@ public class GestorBD {
 	
 	
 	/**
-	 * Inserta Personajes en la BBDD
+	 * Inserta Surfistas en la BBDD
 	 */
 	public void insertarSurfista(Surfista... surfistas) {
 		//Se define la plantilla de la sentencia SQL
@@ -197,7 +197,7 @@ public class GestorBD {
 		try (Connection con = DriverManager.getConnection(connectionString);
 			 PreparedStatement pStmt = con.prepareStatement(sql)) {
 									
-			//Se recorren los clientes y se insertan uno a uno
+			//Se recorren los surfistas y se insertan uno a uno
 			for (Surfista s : surfistas) {
 				//Se añaden los parámetros al PreparedStatement
 				pStmt.setString(1, Integer.toString(s.getIdSurfista()));
@@ -207,12 +207,7 @@ public class GestorBD {
 				
 				if (pStmt.executeUpdate() != 1) {					
 					logger.warning(String.format("No se ha insertado el Surfista: %s", s));
-				} else {
-					//IMPORTANTE: El valor del ID del personaje se establece automáticamente al
-					//insertarlo en la BBDD. Por lo tanto, después de insertar un personaje, 
-					//se recupera de la BBDD para establecer el campo ID en el objeto que está
-					//en memoria.
-										
+				} else {			
 					logger.info(String.format("Se ha insertado el Surfista: %s", s));
 				}
 			}
@@ -232,7 +227,7 @@ public class GestorBD {
 		try (Connection con = DriverManager.getConnection(connectionString);
 			 PreparedStatement pStmt = con.prepareStatement(sql)) {
 			
-			//Se recorren los clientes y se insertan uno a uno
+			//Se recorren los eventos y se insertan uno a uno
 			for (Evento e : eventos) {
 				//Se definen los parámetros de la sentencia SQL
 				pStmt.setString(1, Integer.toString(e.getIdEvento()));
@@ -240,7 +235,18 @@ public class GestorBD {
 				pStmt.setString(3, e.getFechaInicio());
 				pStmt.setString(4, e.getFechaFin());
 				
-				//Meter una cadena de surfistas como string
+				StringBuilder sb = new StringBuilder();
+				List<Surfista> surfistas = e.getParticipantes();
+				String delim = "-";
+				for (Surfista surfista : surfistas) {
+				    sb.append(convertirSurfistaACadena(surfista)).append(delim);
+				}
+				sb.deleteCharAt(sb.length() - 1); // Eliminar el último delimitador extra
+
+				pStmt.setString(5, sb.toString());
+
+				
+				/*Meter una cadena de surfistas como string
 				StringBuilder sb = new StringBuilder();
 				List<Surfista> surfistas = e.getParticipantes();
 				String delim = "-";
@@ -252,7 +258,7 @@ public class GestorBD {
 		            i++;
 		        }
 		        sb.append(surfistas.get(i));
-				pStmt.setString(5, sb.toString());
+				pStmt.setString(5, sb.toString());*/
 				
 				if (pStmt.executeUpdate() != 1) {					
 					logger.warning(String.format("No se ha insertado el Evento: %s", e));
@@ -270,7 +276,7 @@ public class GestorBD {
 		}				
 	}
 	
-	//metodo para insertar resultadoEvento	
+	
 	/**
 	 * Inserta resultadoEvento en la BBDD
 	 */
@@ -398,7 +404,7 @@ public class GestorBD {
 			
 			while (rs.next()) {
 				
-				String[] surfistasSeparados = rs.getString("participantes").split(";");
+				/*String[] surfistasSeparados = rs.getString("participantes").split(";");
 				
 				ArrayList<Surfista> listaSurfistas = new ArrayList<>();
 
@@ -416,17 +422,33 @@ public class GestorBD {
 				    // Crear el objeto Surfista y agregarlo a la lista
 				    Surfista surfista = new Surfista(id, nombre, pais, ranking);
 				    listaSurfistas.add(surfista);
-				}
+				}*/
 				
-				evento = new Evento(rs.getInt("idEvento"), 
-							rs.getString("nombre"),
-							rs.getString("fechaInicio"),
-							rs.getString("fechaFin"),
-							listaSurfistas);
-				
-				
-				//Se inserta cada nuevo cliente en la lista de clientes
-				eventos.add(evento);
+				String participantesString = rs.getString("participantes");
+			    logger.info("Participantes de la base de datos: " + participantesString);
+
+			    List<Surfista> listaSurfistas = new ArrayList<>();
+
+			    String[] surfistasInfo = participantesString.split("-");
+			    for (int i = 0; i < surfistasInfo.length; i += 4) {
+			        int id = Integer.parseInt(surfistasInfo[i]);
+			        String nombre = surfistasInfo[i + 1];
+			        String pais = surfistasInfo[i + 2];
+			        int ranking = Integer.parseInt(surfistasInfo[i + 3]);
+
+			        Surfista surfista = new Surfista(id, nombre, pais, ranking);
+			        listaSurfistas.add(surfista);
+			    }
+
+			    evento = new Evento(
+			        rs.getInt("idEvento"),
+			        rs.getString("nombre"),
+			        rs.getString("fechaInicio"),
+			        rs.getString("fechaFin"),
+			        listaSurfistas
+			    );
+
+			    eventos.add(evento);
 			}
 			//Se cierra el ResultSet
 			rs.close();
@@ -439,6 +461,23 @@ public class GestorBD {
 		
 		return eventos;
 	}
+	
+	//metodo para crear el objeto surfista en una cadena para insertarlo en la base de datos
+	public String convertirSurfistaACadena(Surfista surfista) {
+	    // Aquí conviertes el surfista en una cadena con un formato específico
+	    return String.format("%d-%s-%s-%d", surfista.getIdSurfista(), surfista.getNombre(), surfista.getPaisOrigen(), surfista.getPuestoRanking());
+	}
+
+	public Surfista convertirCadenaASurfista(String cadena) {
+	    // Aquí conviertes la cadena a un objeto Surfista utilizando la lógica inversa del formateo
+	    String[] partes = cadena.split("-");
+	    int id = Integer.parseInt(partes[0]);
+	    String nombre = partes[1];
+	    String pais = partes[2];
+	    int ranking = Integer.parseInt(partes[3]);
+	    return new Surfista(id, nombre, pais, ranking);
+	}
+
 	
 
 }
