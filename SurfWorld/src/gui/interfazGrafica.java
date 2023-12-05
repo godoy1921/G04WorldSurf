@@ -1,6 +1,9 @@
 package gui;
 
 import javax.swing.*;
+
+import data.cargaEvento;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -37,7 +40,7 @@ public class interfazGrafica {
 	
 	        eventosButton.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
-	                new ventanaEventos();
+	                new ventanaEventos(cargaEvento.cargarEventos());
 	            }
 	        });
 	
