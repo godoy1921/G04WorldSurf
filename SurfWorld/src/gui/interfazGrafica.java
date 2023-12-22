@@ -40,7 +40,7 @@ public class interfazGrafica {
 	
 	        eventosButton.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
-	                new ventanaEventos(cargaEvento.cargarEventos());
+	                new ventanaEventos();
 	            }
 	        });
 	
