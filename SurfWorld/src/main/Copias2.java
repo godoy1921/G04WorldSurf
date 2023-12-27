@@ -1,7 +1,6 @@
 package main;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
@@ -22,7 +21,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-public class Copias {
+public class Copias2 {
 	private static DefaultTableModel calendarModel;
     private static DefaultTableModel eventsModel;
     private static JTable calendarTable;
@@ -65,8 +64,6 @@ public class Copias {
         eventsTable = new JTable(eventsModel);
         JScrollPane eventsScrollPane = new JScrollPane(eventsTable);
         eventsPanel.add(eventsScrollPane, BorderLayout.CENTER);
-        
-
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, calendarPanel, eventsPanel);
         splitPane.setDividerLocation(350); // Ajusta la posición del divisor
@@ -87,10 +84,6 @@ public class Copias {
                 }
             }
         });
-        
-        IconRenderer iconRenderer = new IconRenderer();
-        calendarTable.setDefaultRenderer(Object.class, iconRenderer);
-
 
         frame.setVisible(true);
         LocalDate now = LocalDate.now();
@@ -194,100 +187,7 @@ public class Copias {
                 calendarModel.setValueAt(day++, i, j);
             }
         }
-        
-        List<Evento> eventos = cargaEvento.cargarEventos();
-        
-        for (Evento evento : eventos) {
-            LocalDate fechaInicio = parsearFecha(evento.getFechaInicio());
-            LocalDate fechaFin = parsearFecha(evento.getFechaFin());
-
-            // Iterar sobre el rango de fechas del evento
-            for (LocalDate date = fechaInicio; date.isBefore(fechaFin.plusDays(1)); date = date.plusDays(1)) {
-                if (date.getMonthValue() == selectedMonth && date.getYear() == selectedYear) {
-                    int rowX = date.getDayOfMonth() / 7;
-                    int column = date.getDayOfMonth() % 7;
-
-                    ImageIcon iconoEvento = obtenerIconoEvento(evento); // Implementa tu lógica para obtener el icono del evento
-                    calendarTable.setValueAt(iconoEvento, rowX, column);
-                }
-            }
-        }
 
         calendarTable.repaint();
     }
-    
-    private static ImageIcon obtenerIconoEvento(Evento evento) {
-        String nombreEvento = evento.getNombre();
-        String nombreImagen = "";
-
-        switch (nombreEvento) {
-            case "World Surf League":
-                nombreImagen = "WorldSurfLeague.png";
-                break;
-            case "Billabong Pipe Masters":
-                nombreImagen = "Billabong.png";
-                break;
-            case "Jbay Open":
-                nombreImagen = "JbayOpen.jpg";
-                break;
-            case "Margaret River Pro":
-                nombreImagen = "MargaretRiver.jpg";
-                break;
-            case "Quick Silver Pro":
-                nombreImagen = "QuickSilver.jpg";
-                break;
-            case "Tahiti pro":
-                nombreImagen = "TahitiPro.jpg";
-                break;
-            default:
-                // Nombre de imagen predeterminado o manejo de error si no se encuentra el evento
-                nombreImagen = "default.png";
-                break;
-        }
-
-        // Suponiendo que los logos están en una carpeta llamada "logos" dentro del proyecto
-        String rutaImagen = "surfworld/img/" + nombreImagen;
-        ImageIcon icono = new ImageIcon(rutaImagen);
-
-        return icono;
-    }
-    
-    static class IconRenderer extends DefaultTableCellRenderer {
-        private int iconWidth = 30; // Ancho deseado de la imagen
-        private int iconHeight = 30; // Alto deseado de la imagen
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            label.setIcon(null); // Limpia el icono
-
-            if (value instanceof ImageIcon) {
-                ImageIcon originalIcon = (ImageIcon) value;
-                Image img = originalIcon.getImage();
-                Image newImg = img.getScaledInstance(iconWidth, iconHeight, Image.SCALE_SMOOTH);
-                ImageIcon scaledIcon = new ImageIcon(newImg);
-                label.setIcon(scaledIcon);
-                label.setText(""); // Borra el texto
-            } 
-            return label;
-        }
-    }
-    
-
-
-
-
-    }
-
-
-
-
-
-	/* Codigo calendario que abajo pone el campeonato y sus surfistas
-	
-	
- */
-
-	
-	
-
+}

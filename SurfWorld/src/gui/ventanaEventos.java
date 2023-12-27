@@ -1,5 +1,6 @@
 package gui;
 
+
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.DefaultTableModel;
@@ -29,6 +30,9 @@ public class ventanaEventos {
         JCalendar calendar = new JCalendar();
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(calendar, BorderLayout.CENTER);
+        calendar.setTodayButtonVisible(true);
+        calendar.setTodayButtonText("Recent");
+        calendar.setWeekOfYearVisible(false);
 
         // Crear el JTable para mostrar la información del evento y los surfistas
         tableModel = new DefaultTableModel(new String[]{"Evento", "Surfistas"}, 0);
@@ -50,6 +54,8 @@ public class ventanaEventos {
         frame.add(panel);
         frame.setVisible(true);
     }
+    
+
 
     private void cargarInformacionEventos(java.util.Date selectedDate) {
         // Obtener eventos del archivo de datos (reemplaza esto por tu lógica para obtener eventos)
