@@ -8,6 +8,7 @@ import com.toedter.calendar.JCalendar;
 
 import data.cargaEvento;
 import domain.Evento;
+import domain.Surfista;
 
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
@@ -65,7 +66,13 @@ public class ventanaEventos {
 
             if (selectedDate.after(fechaInicio) && selectedDate.before(fechaFin)) {
                 // Agregar evento y surfistas a la tabla
-                tableModel.addRow(new Object[]{evento.getNombre(), evento.getParticipantes()});
+            	StringBuilder surfistas = new StringBuilder();
+                for (Surfista surfista : evento.getParticipantes()) {
+                    surfistas.append(surfista.getNombre()).append(", ");
+                }
+                tableModel.addRow(new Object[]{evento.getNombre(), surfistas.toString()});
+                
+             
             }
         }
     }
