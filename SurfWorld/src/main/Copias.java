@@ -72,22 +72,6 @@ public class Copias {
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, calendarPanel, eventsPanel);
         splitPane.setDividerLocation(350); // Ajusta la posición del divisor
         frame.add(splitPane);
-
-        calendarTable.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int row = calendarTable.rowAtPoint(e.getPoint());
-                int col = calendarTable.columnAtPoint(e.getPoint());
-
-                Object selectedValue = calendarModel.getValueAt(row, col);
-                if (selectedValue != null && selectedValue instanceof Integer) {
-                    selectedDate = selectedDate.withDayOfMonth((Integer) selectedValue);
-                    cargarInformacionEventos(selectedDate);
-                    calendarTable.clearSelection();
-                    calendarTable.repaint();
-                }
-            }
-        });
         
         IconRenderer iconRenderer = new IconRenderer();
         calendarTable.setDefaultRenderer(Object.class, iconRenderer);
@@ -119,7 +103,7 @@ public class Copias {
         monthComboBox.setSelectedIndex(LocalDate.now().getMonthValue() - 1);
         yearComboBox.setSelectedItem(String.valueOf(LocalDate.now().getYear()));
 
-        monthComboBox.addActionListener(e -> {
+        /*monthComboBox.addActionListener(e -> {
             int selectedMonth = monthComboBox.getSelectedIndex() + 1;
             int selectedYear = Integer.parseInt((String) yearComboBox.getSelectedItem());
             updateCalendar(selectedMonth, selectedYear);
@@ -130,6 +114,26 @@ public class Copias {
             int selectedYear = Integer.parseInt((String) yearComboBox.getSelectedItem());
             updateCalendar(selectedMonth, selectedYear);
         });
+        */
+        
+     // En el ActionListener de los ComboBox de mes y año
+        monthComboBox.addActionListener(e -> {
+            int selectedMonth = monthComboBox.getSelectedIndex() + 1;
+            int selectedYear = Integer.parseInt((String) yearComboBox.getSelectedItem());
+            updateCalendar(selectedMonth, selectedYear);
+            LocalDate selectedDate = LocalDate.of(selectedYear, selectedMonth, 1);
+            cargarInformacionEventos(selectedDate);
+        });
+
+        yearComboBox.addActionListener(e -> {
+            int selectedMonth = monthComboBox.getSelectedIndex() + 1;
+            int selectedYear = Integer.parseInt((String) yearComboBox.getSelectedItem());
+            updateCalendar(selectedMonth, selectedYear);
+            LocalDate selectedDate = LocalDate.of(selectedYear, selectedMonth, 1);
+            cargarInformacionEventos(selectedDate);
+        });
+
+        
 
         return panel;
     }

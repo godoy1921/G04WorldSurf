@@ -73,7 +73,8 @@ public class Copias2 {
         splitPane.setDividerLocation(350); // Ajusta la posición del divisor
         frame.add(splitPane);
 
-        calendarTable.addMouseListener(new MouseAdapter() {
+        //Codigo para seleccionar las celdas y visualizar los eventos
+        /*calendarTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int row = calendarTable.rowAtPoint(e.getPoint());
@@ -87,7 +88,7 @@ public class Copias2 {
                     calendarTable.repaint();
                 }
             }
-        });
+        });*/
         
      
 
