@@ -1,6 +1,8 @@
 package main;
 
+import java.net.URL;
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
@@ -37,7 +39,7 @@ public class Copias2 {
         JPanel eventsPanel = new JPanel(new BorderLayout());
 
         calendarModel = new DefaultTableModel(6, 7);
-        String[] daysOfWeek = {"Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"};
+        String[] daysOfWeek = {"Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"};
         calendarModel.setColumnIdentifiers(daysOfWeek);
 
         calendarTable = new JTable(calendarModel) {
@@ -64,6 +66,8 @@ public class Copias2 {
         eventsTable = new JTable(eventsModel);
         JScrollPane eventsScrollPane = new JScrollPane(eventsTable);
         eventsPanel.add(eventsScrollPane, BorderLayout.CENTER);
+        
+
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, calendarPanel, eventsPanel);
         splitPane.setDividerLocation(350); // Ajusta la posición del divisor
@@ -84,6 +88,13 @@ public class Copias2 {
                 }
             }
         });
+        
+     
+
+        
+        IconRenderer iconRenderer = new IconRenderer();
+        calendarTable.setDefaultRenderer(Object.class, iconRenderer);
+
 
         frame.setVisible(true);
         LocalDate now = LocalDate.now();
@@ -101,7 +112,7 @@ public class Copias2 {
 
         JComboBox<String> yearComboBox = new JComboBox<>();
         int year = LocalDate.now().getYear();
-        for (int i = year - 5; i <= year + 5; i++) {
+        for (int i = year - 1; i <= year + 1; i++) {
             yearComboBox.addItem(String.valueOf(i));
         }
 
@@ -154,7 +165,7 @@ public class Copias2 {
 
     // Método para convertir String a LocalDate (aquí necesitas implementar tu lógica de conversión)
     private static LocalDate parsearFecha(String fecha) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MM-yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         return LocalDate.parse(fecha, formatter);
     }
 
@@ -187,7 +198,105 @@ public class Copias2 {
                 calendarModel.setValueAt(day++, i, j);
             }
         }
+        
+        List<Evento> eventos = cargaEvento.cargarEventos();
+        
+     // Obtener el día de la semana en que comienza el mes y calcular el offset
+        int firstDayOfWeekX = selectedDate.withDayOfMonth(1).getDayOfWeek().getValue();
+        int offset = (firstDayOfWeekX + 5) % 7; // Calcula el desplazamiento para empezar desde el domingo
+
+        // Iterar sobre los eventos y colocar los íconos en las celdas correspondientes
+        for (Evento evento : eventos) {
+            LocalDate fechaInicio = parsearFecha(evento.getFechaInicio());
+            LocalDate fechaFin = parsearFecha(evento.getFechaFin());
+
+            // Iterar sobre el rango de fechas del evento
+            for (LocalDate date = fechaInicio; date.isBefore(fechaFin.plusDays(1)); date = date.plusDays(1)) {
+                if (date.getMonthValue() == selectedMonth && date.getYear() == selectedYear) {
+                    int dayOfMonth = date.getDayOfMonth();
+
+                    // Calcular la posición de la celda para colocar el ícono
+                    int rowX = (dayOfMonth + offset) / 7;
+                    int column = (dayOfMonth + offset) % 7;
+
+                    // Asegurarse de que el ícono se coloque en la celda del día 1 del mes
+                    if (dayOfMonth == 1) {
+                        rowX = 0;
+                        column = (firstDayOfWeekX + 6) % 7; // Ajustar columna para el día 1
+                        
+                    }
+
+                    ImageIcon iconoEvento = obtenerIconoEvento(evento); 
+                    calendarTable.setValueAt(iconoEvento, rowX, column);
+                }
+            }
+        }
 
         calendarTable.repaint();
     }
-}
+    
+    private static ImageIcon obtenerIconoEvento(Evento evento) {
+        String nombreEvento = evento.getNombre();
+        String nombreImagen = "";
+
+        switch (nombreEvento) {
+            case "World Surf League":
+                nombreImagen = "WorldSurfLeague.png";
+                break;
+            case "Billabong Pipe Masters":
+                nombreImagen = "Billabong.png";
+                break;
+            case "Jbay Open":
+                nombreImagen = "JbayOpen.jpg";
+                break;
+            case "Margaret River Pro":
+                nombreImagen = "MargaretRiver.jpg";
+                break;
+            case "Quick Silver Pro":
+                nombreImagen = "QuickSilver.jpg";
+                break;
+            case "Tahiti Pro":
+                nombreImagen = "TahitiPro.jpg";
+                break;
+            default:
+                // Nombre de imagen predeterminado o manejo de error si no se encuentra el evento
+                nombreImagen = "default.png";
+                break;
+        }
+        
+      
+
+        // Suponiendo que los logos están en una carpeta llamada "logos" dentro del proyecto
+        String rutaImagen = "surfworld/img/" + nombreImagen;
+        ImageIcon icono = new ImageIcon(rutaImagen);
+       
+
+        return icono;
+    }
+    
+    static class IconRenderer extends DefaultTableCellRenderer {
+        private int iconWidth = 30; // Ancho deseado de la imagen
+        private int iconHeight = 30; // Alto deseado de la imagen
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            label.setIcon(null); // Limpia el icono
+
+            if (value instanceof ImageIcon) {
+                ImageIcon originalIcon = (ImageIcon) value;
+                Image img = originalIcon.getImage();
+                Image newImg = img.getScaledInstance(iconWidth, iconHeight, Image.SCALE_SMOOTH);
+                ImageIcon scaledIcon = new ImageIcon(newImg);
+                label.setIcon(scaledIcon);
+                label.setText(""); // Borra el texto
+            } 
+            return label;
+        }
+    }
+    
+
+
+
+
+    }
