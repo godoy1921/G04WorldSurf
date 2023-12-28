@@ -48,13 +48,17 @@ public class Copias {
                 Component comp = super.prepareRenderer(renderer, row, column);
                 comp.setBackground(Color.WHITE);
                 Object value = getModel().getValueAt(row, column);
-                if (value != null && value.equals(selectedDate.getDayOfMonth())) {
-                    comp.setBackground(Color.CYAN);
-                }
+                //if (value != null && value.equals(selectedDate.getDayOfMonth())) {
+                    //comp.setBackground(Color.CYAN);
+                    
+                //}
                 return comp;
             }
         };
-        calendarTable.setRowHeight(40);
+        
+        calendarTable.setRowHeight(60); // Ajusta la altura de las filas
+        calendarTable.getColumnModel().getColumn(0).setPreferredWidth(80); // Ajusta el ancho de las celdas
+
         calendarTable.setIntercellSpacing(new Dimension(5, 5));
         calendarTable.setDefaultEditor(Object.class, null);
 
@@ -103,18 +107,7 @@ public class Copias {
         monthComboBox.setSelectedIndex(LocalDate.now().getMonthValue() - 1);
         yearComboBox.setSelectedItem(String.valueOf(LocalDate.now().getYear()));
 
-        /*monthComboBox.addActionListener(e -> {
-            int selectedMonth = monthComboBox.getSelectedIndex() + 1;
-            int selectedYear = Integer.parseInt((String) yearComboBox.getSelectedItem());
-            updateCalendar(selectedMonth, selectedYear);
-        });
-
-        yearComboBox.addActionListener(e -> {
-            int selectedMonth = monthComboBox.getSelectedIndex() + 1;
-            int selectedYear = Integer.parseInt((String) yearComboBox.getSelectedItem());
-            updateCalendar(selectedMonth, selectedYear);
-        });
-        */
+        
         
      // En el ActionListener de los ComboBox de mes y año
         monthComboBox.addActionListener(e -> {
@@ -150,10 +143,11 @@ public class Copias {
             // Convertir las fechas de String a LocalDate (usando métodos parseados que tengas)
             LocalDate fechaInicio = parsearFecha(evento.getFechaInicio());
             LocalDate fechaFin = parsearFecha(evento.getFechaFin());
-
+           
             // Verificar si el evento cae en el día seleccionado
-            if ((selectedDate.isEqual(fechaInicio) || selectedDate.isAfter(fechaInicio)) &&
-                (selectedDate.isEqual(fechaFin) || selectedDate.isBefore(fechaFin))) {
+            if (((selectedDate.getMonth().getValue() > fechaInicio.getMonth().getValue() && selectedDate.getMonth().getValue() < fechaFin.getMonth().getValue()) 
+            		|| (selectedDate.getMonth().getValue() == fechaInicio.getMonth().getValue()) || (selectedDate.getMonth().getValue() == fechaFin.getMonth().getValue()))
+            		&& (selectedDate.getYear() == fechaInicio.getYear() || selectedDate.getYear() == fechaFin.getYear())) {
                 // Obtener los surfistas participantes y agregarlos a la tabla de eventos
                 StringBuilder surfistas = new StringBuilder();
                 for (Surfista surfista : evento.getParticipantes()) {
@@ -232,6 +226,7 @@ public class Copias {
                 }
             }
         }
+        
 
         calendarTable.repaint();
     }
@@ -276,8 +271,13 @@ public class Copias {
     }
     
     static class IconRenderer extends DefaultTableCellRenderer {
-        private int iconWidth = 30; // Ancho deseado de la imagen
-        private int iconHeight = 30; // Alto deseado de la imagen
+        private int iconWidth = 50; // Ancho deseado de la imagen
+        private int iconHeight = 50; // Alto deseado de la imagen
+        
+        public IconRenderer() {
+            setHorizontalAlignment(SwingConstants.CENTER); // Centra los elementos en la celda
+            setVerticalAlignment(SwingConstants.CENTER);
+        }
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {

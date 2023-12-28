@@ -48,13 +48,17 @@ public class Copias2 {
                 Component comp = super.prepareRenderer(renderer, row, column);
                 comp.setBackground(Color.WHITE);
                 Object value = getModel().getValueAt(row, column);
-                if (value != null && value.equals(selectedDate.getDayOfMonth())) {
-                    comp.setBackground(Color.CYAN);
-                }
+                //if (value != null && value.equals(selectedDate.getDayOfMonth())) {
+                    //comp.setBackground(Color.CYAN);
+                    
+                //}
                 return comp;
             }
         };
-        calendarTable.setRowHeight(40);
+        
+        calendarTable.setRowHeight(60); // Ajusta la altura de las filas
+        calendarTable.getColumnModel().getColumn(0).setPreferredWidth(80); // Ajusta el ancho de las celdas
+
         calendarTable.setIntercellSpacing(new Dimension(5, 5));
         calendarTable.setDefaultEditor(Object.class, null);
 
@@ -72,26 +76,6 @@ public class Copias2 {
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, calendarPanel, eventsPanel);
         splitPane.setDividerLocation(350); // Ajusta la posición del divisor
         frame.add(splitPane);
-
-        //Codigo para seleccionar las celdas y visualizar los eventos
-        /*calendarTable.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int row = calendarTable.rowAtPoint(e.getPoint());
-                int col = calendarTable.columnAtPoint(e.getPoint());
-
-                Object selectedValue = calendarModel.getValueAt(row, col);
-                if (selectedValue != null && selectedValue instanceof Integer) {
-                    selectedDate = selectedDate.withDayOfMonth((Integer) selectedValue);
-                    cargarInformacionEventos(selectedDate);
-                    calendarTable.clearSelection();
-                    calendarTable.repaint();
-                }
-            }
-        });*/
-        
-     
-
         
         IconRenderer iconRenderer = new IconRenderer();
         calendarTable.setDefaultRenderer(Object.class, iconRenderer);
@@ -123,17 +107,26 @@ public class Copias2 {
         monthComboBox.setSelectedIndex(LocalDate.now().getMonthValue() - 1);
         yearComboBox.setSelectedItem(String.valueOf(LocalDate.now().getYear()));
 
+        
+        
+     // En el ActionListener de los ComboBox de mes y año
         monthComboBox.addActionListener(e -> {
             int selectedMonth = monthComboBox.getSelectedIndex() + 1;
             int selectedYear = Integer.parseInt((String) yearComboBox.getSelectedItem());
             updateCalendar(selectedMonth, selectedYear);
+            LocalDate selectedDate = LocalDate.of(selectedYear, selectedMonth, 1);
+            cargarInformacionEventos(selectedDate);
         });
 
         yearComboBox.addActionListener(e -> {
             int selectedMonth = monthComboBox.getSelectedIndex() + 1;
             int selectedYear = Integer.parseInt((String) yearComboBox.getSelectedItem());
             updateCalendar(selectedMonth, selectedYear);
+            LocalDate selectedDate = LocalDate.of(selectedYear, selectedMonth, 1);
+            cargarInformacionEventos(selectedDate);
         });
+
+        
 
         return panel;
     }
@@ -150,10 +143,11 @@ public class Copias2 {
             // Convertir las fechas de String a LocalDate (usando métodos parseados que tengas)
             LocalDate fechaInicio = parsearFecha(evento.getFechaInicio());
             LocalDate fechaFin = parsearFecha(evento.getFechaFin());
-
+           
             // Verificar si el evento cae en el día seleccionado
-            if ((selectedDate.isEqual(fechaInicio) || selectedDate.isAfter(fechaInicio)) &&
-                (selectedDate.isEqual(fechaFin) || selectedDate.isBefore(fechaFin))) {
+            if (((selectedDate.getMonth().getValue() > fechaInicio.getMonth().getValue() && selectedDate.getMonth().getValue() < fechaFin.getMonth().getValue()) 
+            		|| (selectedDate.getMonth().getValue() == fechaInicio.getMonth().getValue()) || (selectedDate.getMonth().getValue() == fechaFin.getMonth().getValue()))
+            		&& (selectedDate.getYear() == fechaInicio.getYear() || selectedDate.getYear() == fechaFin.getYear())) {
                 // Obtener los surfistas participantes y agregarlos a la tabla de eventos
                 StringBuilder surfistas = new StringBuilder();
                 for (Surfista surfista : evento.getParticipantes()) {
@@ -206,32 +200,41 @@ public class Copias2 {
         int firstDayOfWeekX = selectedDate.withDayOfMonth(1).getDayOfWeek().getValue();
         int offset = (firstDayOfWeekX + 5) % 7; // Calcula el desplazamiento para empezar desde el domingo
 
-        // Iterar sobre los eventos y colocar los íconos en las celdas correspondientes
         for (Evento evento : eventos) {
             LocalDate fechaInicio = parsearFecha(evento.getFechaInicio());
             LocalDate fechaFin = parsearFecha(evento.getFechaFin());
 
-            // Iterar sobre el rango de fechas del evento
             for (LocalDate date = fechaInicio; date.isBefore(fechaFin.plusDays(1)); date = date.plusDays(1)) {
                 if (date.getMonthValue() == selectedMonth && date.getYear() == selectedYear) {
                     int dayOfMonth = date.getDayOfMonth();
-
-                    // Calcular la posición de la celda para colocar el ícono
                     int rowX = (dayOfMonth + offset) / 7;
                     int column = (dayOfMonth + offset) % 7;
 
-                    // Asegurarse de que el ícono se coloque en la celda del día 1 del mes
                     if (dayOfMonth == 1) {
                         rowX = 0;
-                        column = (firstDayOfWeekX + 6) % 7; // Ajustar columna para el día 1
-                        
+                        column = (firstDayOfWeekX + 6) % 7;
                     }
 
-                    ImageIcon iconoEvento = obtenerIconoEvento(evento); 
-                    calendarTable.setValueAt(iconoEvento, rowX, column);
+                    // Obtener el número del día como JLabel
+                    JLabel dayLabel = new JLabel(String.valueOf(dayOfMonth), SwingConstants.CENTER);
+                    dayLabel.setVerticalAlignment(SwingConstants.TOP);
+
+                    // Obtener el icono del evento como JLabel
+                    ImageIcon iconoEvento = obtenerIconoEvento(evento);
+                    JLabel iconLabel = new JLabel(iconoEvento);
+
+                    // Crear un panel para albergar ambos JLabels (número y icono)
+                    JPanel cellPanel = new JPanel(new BorderLayout());
+                    cellPanel.add(dayLabel, BorderLayout.NORTH);
+                    cellPanel.add(iconLabel, BorderLayout.CENTER);
+
+                    calendarTable.setValueAt(cellPanel, rowX, column);
                 }
             }
         }
+    
+        
+        
 
         calendarTable.repaint();
     }
@@ -276,8 +279,13 @@ public class Copias2 {
     }
     
     static class IconRenderer extends DefaultTableCellRenderer {
-        private int iconWidth = 30; // Ancho deseado de la imagen
-        private int iconHeight = 30; // Alto deseado de la imagen
+        private int iconWidth = 50; // Ancho deseado de la imagen
+        private int iconHeight = 50; // Alto deseado de la imagen
+        
+        public IconRenderer() {
+            setHorizontalAlignment(SwingConstants.CENTER); // Centra los elementos en la celda
+            setVerticalAlignment(SwingConstants.CENTER);
+        }
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
