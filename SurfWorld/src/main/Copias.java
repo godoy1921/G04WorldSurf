@@ -306,10 +306,7 @@ public class Copias {
 
 
 
-	/* Codigo calendario que abajo pone el campeonato y sus surfistas
 	
-	
- */
 
 
 
