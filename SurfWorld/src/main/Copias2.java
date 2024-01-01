@@ -1,59 +1,56 @@
 package main;
 
+import com.mxgraph.layout.mxCompactTreeLayout;
+import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.view.mxGraph;
+
 import javax.swing.*;
 import java.awt.*;
 
-public class Copias extends JFrame {
+public class Copias2 extends JFrame {
 
-    private static final int PARTICIPANTES = 16;
-    private static final int NIVELES = 4;
-    private static final int LADO = 50;
+    private static final int NUM_PARTICIPANTES = 16;
 
-    public Copias() {
-        setTitle("Torneo de Surf");
+    public Torneo() {
+        setTitle("Torneo");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(false);
+        setSize(800, 600);
+        setLayout(new BorderLayout());
 
-        JPanel panel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
+        mxGraph graph = new mxGraph();
+        Object parent = graph.getDefaultParent();
+        graph.getModel().beginUpdate();
 
-                int[] posX = new int[PARTICIPANTES + 1];
-                int nivelHeight = getHeight() / (NIVELES + 2);
+        try {
+            Object root = graph.insertVertex(parent, null, "Campeonato", 400, 20, 80, 30);
 
-                for (int nivel = 0; nivel <= NIVELES; nivel++) {
-                    int nodeCount = (int) Math.pow(2, nivel);
-                    int nivelWidth = getWidth() / (nodeCount + 1);
-
-                    for (int i = 1; i <= nodeCount; i++) {
-                        int x = i * nivelWidth;
-                        int y = (nivel + 1) * nivelHeight;
-                        g.drawRect(x - LADO / 2, y - LADO / 2, LADO, LADO);
-                        posX[i] = x;
-                        if (nivel > 0 && i <= nodeCount / 2) {
-                            int childX1 = 2 * x - nivelWidth;
-                            int childX2 = 2 * x + nivelWidth;
-                            int childY = (nivel + 2) * nivelHeight;
-                            g.drawLine(x, y - LADO / 2, childX1, childY - LADO / 2);
-                            g.drawLine(x, y - LADO / 2, childX2, childY - LADO / 2);
-                        }
-                    }
-                }
+            Object[] participantes = new Object[NUM_PARTICIPANTES];
+            for (int i = 0; i < NUM_PARTICIPANTES; i++) {
+                participantes[i] = graph.insertVertex(parent, null, "Participante " + (i + 1), 50 + i * 50, 80, 80, 30);
+                graph.insertEdge(parent, null, "", root, participantes[i]);
             }
-        };
 
-        panel.setPreferredSize(new Dimension(800, 550));
-        getContentPane().add(panel);
-        pack();
-        setLocationRelativeTo(null);
+            organizarArbol(graph, root);
+        } finally {
+            graph.getModel().endUpdate();
+        }
+
+        mxGraphComponent graphComponent = new mxGraphComponent(graph);
+        add(graphComponent, BorderLayout.CENTER);
         setVisible(true);
     }
 
+    private void organizarArbol(mxGraph graph, Object root) {
+        mxCompactTreeLayout layout = new mxCompactTreeLayout(graph, false);
+        layout.setHorizontal(false);
+        layout.execute(root);
+    }
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(Copias::new);
+        SwingUtilities.invokeLater(() -> {
+            Torneo torneo = new Torneo();
+            torneo.setVisible(true);
+        });
     }
 }
-
-
 
