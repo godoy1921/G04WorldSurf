@@ -11,7 +11,7 @@ import data.cargaSurfista;
 import domain.Evento;
 import domain.ResultadoEvento;
 import domain.Surfista;
-import gui.interfazGrafica;
+import gui.InterfazGrafica;
 import persistence.GestorBD;
 
 public class main {
@@ -37,7 +37,7 @@ public class main {
         		System.out.println(surfistas);
         		System.out.println(eventos);
         		//Lambda expression para abrir la ventana Principal
-        		SwingUtilities.invokeLater(() -> new interfazGrafica());
+        		SwingUtilities.invokeLater(() -> new InterfazGrafica());
         		
         		//Se borran los datos
         		gestorBD.borrarDatos();

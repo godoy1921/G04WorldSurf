@@ -1,56 +1,65 @@
-package main;
-
-import com.mxgraph.layout.mxCompactTreeLayout;
-import com.mxgraph.swing.mxGraphComponent;
-import com.mxgraph.view.mxGraph;
+package gui;
 
 import javax.swing.*;
-import java.awt.*;
 
-public class Copias2 extends JFrame {
+import data.cargaEvento;
 
-    private static final int NUM_PARTICIPANTES = 16;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-    public Torneo() {
-        setTitle("Torneo");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 600);
-        setLayout(new BorderLayout());
+public class interfazGrafica {
+	
+	
 
-        mxGraph graph = new mxGraph();
-        Object parent = graph.getDefaultParent();
-        graph.getModel().beginUpdate();
+   
+        
+        public interfazGrafica() {
+            JFrame frame = new JFrame("Aplicación de Surf");
+            frame.setSize(600, 400);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        try {
-            Object root = graph.insertVertex(parent, null, "Campeonato", 400, 20, 80, 30);
+            JPanel panel = new JPanel();
+            frame.add(panel);
 
-            Object[] participantes = new Object[NUM_PARTICIPANTES];
-            for (int i = 0; i < NUM_PARTICIPANTES; i++) {
-                participantes[i] = graph.insertVertex(parent, null, "Participante " + (i + 1), 50 + i * 50, 80, 80, 30);
-                graph.insertEdge(parent, null, "", root, participantes[i]);
-            }
+	        JButton inicioButton = new JButton("Inicio");
+	        JButton eventosButton = new JButton("Eventos");
+	        JButton competicionButton = new JButton("Competición");
+	
+	        inicioButton.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	            	SwingUtilities.invokeLater(new Runnable() {
+	                    public void run() {
+	                    	VentanaInicio ventana = new VentanaInicio();
+	                        ventana.setVisible(true);
+	                    }
+	                    
+	        		});
+	                
+	            }
+	        });
+	
+	        eventosButton.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	                new VentanaEventos();
+	            }
+	        });
+	
+	        competicionButton.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	                new VentanaCompeticion();
+	            }
+	        });
 
-            organizarArbol(graph, root);
-        } finally {
-            graph.getModel().endUpdate();
-        }
+        panel.add(inicioButton);
+        panel.add(eventosButton);
+        panel.add(competicionButton);
 
-        mxGraphComponent graphComponent = new mxGraphComponent(graph);
-        add(graphComponent, BorderLayout.CENTER);
-        setVisible(true);
-    }
-
-    private void organizarArbol(mxGraph graph, Object root) {
-        mxCompactTreeLayout layout = new mxCompactTreeLayout(graph, false);
-        layout.setHorizontal(false);
-        layout.execute(root);
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            Torneo torneo = new Torneo();
-            torneo.setVisible(true);
-        });
+        frame.add(panel);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(600, 400);
+        frame.setVisible(true);
     }
 }
+
+
 

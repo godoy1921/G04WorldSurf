@@ -32,16 +32,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ventanaInicio extends JFrame {
+public class VentanaInicio extends JPanel {
     private JComboBox<String> comboBoxBuscarPor;
     private JComboBox<String> comboBoxElementos;
     private JTable tablaSurfista;
     private JTable tablaEvento;
 
-    public ventanaInicio() {
-        setTitle("Ventana de Inicio");
+    public VentanaInicio() {
+        setName("Ventana de Inicio");
         setSize(800, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
 
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
@@ -207,7 +208,7 @@ public class ventanaInicio extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                new ventanaInicio();
+                new VentanaInicio();
             }
         });
     }

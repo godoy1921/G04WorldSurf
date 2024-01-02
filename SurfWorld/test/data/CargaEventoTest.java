@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import data.cargaEvento;
+
 import domain.Evento;
 
 public class CargaEventoTest {

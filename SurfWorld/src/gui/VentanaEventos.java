@@ -25,17 +25,18 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
-public class ventanaEventos {
+public class VentanaEventos extends JPanel{
+	
 	private static DefaultTableModel calendarModel;
     private static DefaultTableModel eventsModel;
     private static JTable calendarTable;
     private static JTable eventsTable;
     private static LocalDate selectedDate;
 
-    public ventanaEventos() {
-    	JFrame frame = new JFrame("Calendario y Eventos");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
+    public VentanaEventos() {
+    	setName("Calendario y Eventos");
+        //setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(800, 600);
 
         JPanel calendarPanel = new JPanel(new BorderLayout());
         JPanel eventsPanel = new JPanel(new BorderLayout());
@@ -67,6 +68,7 @@ public class ventanaEventos {
         JScrollPane calendarScrollPane = new JScrollPane(calendarTable);
         calendarPanel.add(createNavigationPanel(), BorderLayout.NORTH);
         calendarPanel.add(calendarScrollPane, BorderLayout.CENTER);
+        
 
         eventsModel = new DefaultTableModel(new String[]{"Evento", "Surfistas"}, 0);
         eventsTable = new JTable(eventsModel);
@@ -77,17 +79,19 @@ public class ventanaEventos {
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, calendarPanel, eventsPanel);
         splitPane.setDividerLocation(350); // Ajusta la posición del divisor
-        frame.add(splitPane);
+        add(splitPane);
         
         IconRenderer iconRenderer = new IconRenderer();
         calendarTable.setDefaultRenderer(Object.class, iconRenderer);
 
 
-        frame.setVisible(true);
+        setVisible(true);
         LocalDate now = LocalDate.now();
         selectedDate = now;
         updateCalendar(now.getMonthValue(), now.getYear());
         cargarInformacionEventos(now);
+        
+       
     }
 
     private static JPanel createNavigationPanel() {
@@ -298,13 +302,24 @@ public class ventanaEventos {
         }
     }
     
+  
+    public void mostrarVentana() {
+    	setVisible(true);
+    }
+    
+    public void ocultarVentana() {
+    	setVisible(false);
+    }
 
 
    
 
     public static void main(String[] args) {
-        // Crear la ventana del calendario
-        SwingUtilities.invokeLater(() -> new ventanaEventos());
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new VentanaEventos();
+            }
+        });
     }
 }
 
