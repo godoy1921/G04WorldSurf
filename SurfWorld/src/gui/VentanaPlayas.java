@@ -2,71 +2,80 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.GridLayout;
+import java.awt.Font;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-public class VentanaPlayas extends JPanel{
-	
-	  private JLabel imageLabel;
-	    private JLabel nameLabel;
-	    private Timer timer;
-	    private int currentIndex;
-	    private String[] beachNames = {"Beach 1", "Beach 2", "Beach 3"}; // Nombres de las playas
-	    private ImageIcon[] beachImages = {
-	        new ImageIcon("beach1.jpg"), // Ruta de las imágenes de las playas
-	        new ImageIcon("beach2.jpg"),
-	        new ImageIcon("beach3.jpg")
-	    };
+public class VentanaPlayas extends JPanel {
 
-	    public VentanaPlayas() {
-	        setLayout(new BorderLayout());
+    private JLabel imageLabel;
+    private JLabel nameLabel;
+    private Timer timer;
+    private int currentIndex;
+    private String[] beachNames = {"HOSSEGOR - Quick Silver Pro", "JBAY - JBay Open", "MARGARET RIVER - Margaret River Pro", "PIPELINE - Billabong Pipe Masters", "TAHITI - Tahiti Pro"};
+    private ImageIcon[] beachImages = {
+        new ImageIcon("surfworld\\img\\hossegor.jpg"),
+        new ImageIcon("surfworld\\img\\JBay.jpg"),
+        new ImageIcon("surfworld\\img\\margaret.jpg"),
+        new ImageIcon("surfworld\\img\\pipeline.jpg"),
+        new ImageIcon("surfworld\\img\\tahiti.jpg")
+    };
 
-	        imageLabel = new JLabel();
-	        nameLabel = new JLabel();
+    public VentanaPlayas() {
+        setLayout(new BorderLayout());
+        Color lightBlue = new Color(135, 206, 250);
+        setBackground(lightBlue);
 
-	        add(imageLabel, BorderLayout.CENTER);
-	        add(nameLabel, BorderLayout.SOUTH);
+        imageLabel = new JLabel();
+        nameLabel = new JLabel();
+        
+        nameLabel.setHorizontalAlignment(JLabel.CENTER);
+        nameLabel.setFont(new Font("Arial", Font.BOLD, 16));
 
-	        currentIndex = 0;
-	        updateSlide();
+        add(imageLabel, BorderLayout.CENTER);
+        add(nameLabel, BorderLayout.SOUTH);
 
-	        int delay = 5000; // Tiempo en milisegundos para cambiar las imágenes (5 segundos)
-	        timer = new Timer(delay, new ActionListener() {
-	            public void actionPerformed(ActionEvent e) {
-	                currentIndex = (currentIndex + 1) % beachImages.length;
-	                updateSlide();
-	            }
-	        });
-	        timer.start();
-	    }
+        currentIndex = 0;
+        updateSlide();
 
-	    private void updateSlide() {
-	        imageLabel.setIcon(beachImages[currentIndex]);
-	        nameLabel.setText(beachNames[currentIndex]);
-	    }
+        int delay = 5000;
+        timer = new Timer(delay, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                currentIndex = (currentIndex + 1) % beachImages.length;
+                updateSlide();
+            }
+        });
+        timer.start();
+    }
 
-	    public static void main(String[] args) {
-	        SwingUtilities.invokeLater(new Runnable() {
-	            public void run() {
-	                JFrame frame = new JFrame("Beach Slide Show");
-	                SlideShowPanel panel = new SlideShowPanel();
-	                frame.add(panel);
-	                frame.setSize(400, 400);
-	                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	                frame.setVisible(true);
-	            }
-	        });
-	    }
-	}
+    private void updateSlide() {
+    	// Escalar la imagen para que todas tengan el mismo tamaño
+        ImageIcon currentImageIcon = beachImages[currentIndex];
+        Image currentImage = currentImageIcon.getImage().getScaledInstance(1500, 700, Image.SCALE_SMOOTH);
+        ImageIcon scaledImageIcon = new ImageIcon(currentImage);
 
+        imageLabel.setIcon(scaledImageIcon);
+        nameLabel.setText(beachNames[currentIndex]);
+    }
 
-
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                JFrame frame = new JFrame("Beach Slide Show");
+                VentanaPlayas panel = new VentanaPlayas();
+                frame.add(panel);
+                frame.setSize(400, 400);
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setVisible(true);
+            }
+        });
+    }
+}

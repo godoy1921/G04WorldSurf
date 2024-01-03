@@ -13,6 +13,7 @@ public class InterfazGrafica {
     private VentanaInicio ventanaInicio;
     private VentanaEventos ventanaEventos;
     private VentanaCompeticion ventanaCompeticion;
+    private VentanaPlayas ventanaPlayas;
 
     public InterfazGrafica() {
         frame = new JFrame("Aplicación de Surf");
@@ -27,6 +28,7 @@ public class InterfazGrafica {
         ventanaInicio = new VentanaInicio();
         ventanaEventos = new VentanaEventos();
         ventanaCompeticion = new VentanaCompeticion();
+        ventanaPlayas = new VentanaPlayas();
 
         // Crear un JLabel para el logo y cargar la imagen desde un archivo
         ImageIcon logo = new ImageIcon("surfworld\\img\\logo.png"); // Ruta a tu archivo de imagen
@@ -40,16 +42,19 @@ public class InterfazGrafica {
         contentPane.add(ventanaInicio, "Inicio");
         contentPane.add(ventanaEventos, "Eventos");
         contentPane.add(ventanaCompeticion, "Competición");
+        contentPane.add(ventanaPlayas, "Playas");
 
      // Crear los botones con texto HTML para el subrayado
         JButton inicioButton = new JButton("<html><u>INICIO</u></html>");
         JButton eventosButton = new JButton("<html><u>EVENTOS</u></html>");
         JButton competicionButton = new JButton("<html><u>COMPETICION</u></html>");
+        JButton playasButton = new JButton("<html><u>PLAYAS</u></html>");
 
         // Establecer el tamaño preferido para asegurarse de que se muestra el texto completo
         inicioButton.setPreferredSize(new Dimension(80, 30));
         eventosButton.setPreferredSize(new Dimension(80, 30));
         competicionButton.setPreferredSize(new Dimension(80, 30));
+        playasButton.setPreferredSize(new Dimension(80, 30));
         
      // Hacer que los botones no tengan un color de fondo visible
         inicioButton.setOpaque(false);
@@ -63,6 +68,10 @@ public class InterfazGrafica {
         competicionButton.setOpaque(false);
         competicionButton.setContentAreaFilled(false);
         competicionButton.setBorderPainted(false);
+        
+        playasButton.setOpaque(false);
+        playasButton.setContentAreaFilled(false);
+        playasButton.setBorderPainted(false);
 
         inicioButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -81,6 +90,12 @@ public class InterfazGrafica {
                 cardLayout.show(contentPane, "Competición");
             }
         });
+        
+        playasButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                cardLayout.show(contentPane, "Playas");
+            }
+        });
 
         headerPanel = new JPanel();
         Color darkBlue = new Color(60, 100, 170);
@@ -93,10 +108,13 @@ public class InterfazGrafica {
         headerPanel.add(eventosButton);
         headerPanel.add(Box.createVerticalStrut(20)); 
         headerPanel.add(competicionButton);
+        headerPanel.add(Box.createVerticalStrut(20)); 
+        headerPanel.add(playasButton);
         
+        JScrollPane contentScrollPane = new JScrollPane(contentPane);
 
         frame.add(headerPanel, BorderLayout.WEST);
-        frame.add(contentPane, BorderLayout.CENTER);
+        frame.add(contentScrollPane, BorderLayout.CENTER);
 
         frame.setVisible(true);
     }

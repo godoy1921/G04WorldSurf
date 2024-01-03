@@ -49,6 +49,7 @@ public class VentanaInicio extends JPanel {
 
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
+        
 
         topPanel = new JPanel();
         Color darkBlue = new Color(60, 100, 170);

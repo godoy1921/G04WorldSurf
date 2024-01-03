@@ -53,10 +53,6 @@ public class VentanaEventos extends JPanel{
                 Component comp = super.prepareRenderer(renderer, row, column);
                 comp.setBackground(Color.WHITE);
                 Object value = getModel().getValueAt(row, column);
-                //if (value != null && value.equals(selectedDate.getDayOfMonth())) {
-                    //comp.setBackground(Color.CYAN);
-                    
-                //}
                 return comp;
             }
         };
@@ -129,6 +125,13 @@ public class VentanaEventos extends JPanel{
             updateCalendar(selectedMonth, selectedYear);
             LocalDate selectedDate = LocalDate.of(selectedYear, selectedMonth, 1);
             cargarInformacionEventos(selectedDate);
+            
+         // Verifica si el mes es diciembre, enero o febrero
+            if (selectedMonth == 12 || selectedMonth == 1 || selectedMonth == 2) {
+                // Inicia un hilo para mostrar la alerta
+                Thread alertThread = new Thread(() -> mostrarAlerta());
+                alertThread.start();
+            }
         });
 
         yearComboBox.addActionListener(e -> {
@@ -308,6 +311,24 @@ public class VentanaEventos extends JPanel{
             return label;
         }
     }
+    
+    private static void mostrarAlerta() {
+        // Ruta a la imagen más pequeña
+        ImageIcon icono = new ImageIcon("surfworld\\img\\alerta.png");
+
+        // Escalar la imagen al tamaño deseado
+        Image imagen = icono.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+        ImageIcon iconoEscalado = new ImageIcon(imagen);
+
+        // Mostrar el cuadro de diálogo con un mensaje y la imagen
+        JOptionPane.showMessageDialog(null,
+                "Las fechas del torneo se pueden aplazar en el mes seleccionado debido a las borrascas",
+                "Alerta de Borrascas", JOptionPane.INFORMATION_MESSAGE, iconoEscalado);
+
+        // Reducir el tamaño del cuadro de diálogo
+        UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
+    }
+
     
   
     public void mostrarVentana() {
