@@ -1,5 +1,7 @@
 package gui;
 
+import java.awt.Color;
+
 import javax.swing.*;
 
 public class VentanaCompeticion extends JPanel{
@@ -10,6 +12,8 @@ public class VentanaCompeticion extends JPanel{
         setName("Ventana de Competición");
         setSize(600, 400);
         //setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        Color lightBlue = new Color(135, 206, 250);
+        setBackground(lightBlue);
 
         JLabel label = new JLabel("Simulación de Competición de Surf");
         JPanel panel = new JPanel();

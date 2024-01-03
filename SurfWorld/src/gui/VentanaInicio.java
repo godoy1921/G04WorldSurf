@@ -35,6 +35,8 @@ import java.util.List;
 public class VentanaInicio extends JPanel {
     private JComboBox<String> comboBoxBuscarPor;
     private JComboBox<String> comboBoxElementos;
+    private JPanel topPanel;
+    private JPanel bottomPanel;
     private JTable tablaSurfista;
     private JTable tablaEvento;
 
@@ -42,24 +44,31 @@ public class VentanaInicio extends JPanel {
         setName("Ventana de Inicio");
         setSize(800, 600);
         //setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+        Color lightBlue = new Color(135, 206, 250);
+        setBackground(lightBlue);
 
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
-        JPanel topPanel = new JPanel();
+        topPanel = new JPanel();
+        Color darkBlue = new Color(60, 100, 170);
+        topPanel.setBackground(darkBlue);
         JLabel labelBuscarPor = new JLabel("Buscar por:");
         comboBoxBuscarPor = new JComboBox<>(new String[]{"Surfista", "Evento"});
         topPanel.add(labelBuscarPor);
         topPanel.add(comboBoxBuscarPor);
 
         JPanel middlePanel = new JPanel();
+        middlePanel.setBackground(darkBlue);
         JLabel labelElementos = new JLabel("Seleccione:");
         comboBoxElementos = new JComboBox<>();
         middlePanel.add(labelElementos);
         middlePanel.add(comboBoxElementos);
 
-        JPanel bottomPanel = new JPanel(new GridLayout(1, 2));
+        bottomPanel = new JPanel(new GridLayout(1, 2));
+        //bottomPanel.setBackground(darkBlue);
+        String titulo = "       SURFISTAS                                                                                                                               EVENTOS";
+        bottomPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(titulo));
         tablaSurfista = new JTable();
         tablaEvento = new JTable();
         JScrollPane scrollPaneSurfista = new JScrollPane(tablaSurfista);
@@ -73,18 +82,7 @@ public class VentanaInicio extends JPanel {
 
         add(panel);
 
-        //comboBoxBuscarPor.addActionListener(new ActionListener() {
-            //public void actionPerformed(ActionEvent e) {
-                //String selected = (String) comboBoxBuscarPor.getSelectedItem();
-                //if (selected.equals("Surfista")) {
-                    // Llenar comboBox con surfistas
-                    // Mostrar detalles de surfista seleccionado en tablaSurfista y eventos relacionados en tablaEvento
-                //} else if (selected.equals("Evento")) {
-                    // Llenar comboBox con eventos
-                    // Mostrar detalles de evento seleccionado en tablaEvento y surfistas relacionados en tablaSurfista
-                //}
-            //}
-        //});
+        
         
         comboBoxBuscarPor.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {

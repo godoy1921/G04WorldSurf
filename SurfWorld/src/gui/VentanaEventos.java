@@ -36,7 +36,9 @@ public class VentanaEventos extends JPanel{
     public VentanaEventos() {
     	setName("Calendario y Eventos");
         //setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 600);
+    	setPreferredSize(new Dimension(1000, 600));
+        Color lightBlue = new Color(135, 206, 250);
+        setBackground(lightBlue);
 
         JPanel calendarPanel = new JPanel(new BorderLayout());
         JPanel eventsPanel = new JPanel(new BorderLayout());
@@ -68,18 +70,23 @@ public class VentanaEventos extends JPanel{
         JScrollPane calendarScrollPane = new JScrollPane(calendarTable);
         calendarPanel.add(createNavigationPanel(), BorderLayout.NORTH);
         calendarPanel.add(calendarScrollPane, BorderLayout.CENTER);
+        calendarPanel.setPreferredSize(new Dimension(650,420));
         
 
         eventsModel = new DefaultTableModel(new String[]{"Evento", "Surfistas"}, 0);
         eventsTable = new JTable(eventsModel);
         JScrollPane eventsScrollPane = new JScrollPane(eventsTable);
         eventsPanel.add(eventsScrollPane, BorderLayout.CENTER);
+        eventsPanel.setPreferredSize(new Dimension(650, 300));
         
 
 
-        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, calendarPanel, eventsPanel);
-        splitPane.setDividerLocation(350); // Ajusta la posición del divisor
-        add(splitPane);
+        //JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, calendarPanel, eventsPanel);
+        //splitPane.setDividerLocation(350); // Ajusta la posición del divisor
+        //add(splitPane);
+        
+        add(calendarPanel, BorderLayout.NORTH);
+        add(eventsPanel, BorderLayout.SOUTH);
         
         IconRenderer iconRenderer = new IconRenderer();
         calendarTable.setDefaultRenderer(Object.class, iconRenderer);
