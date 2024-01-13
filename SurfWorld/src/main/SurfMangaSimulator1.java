@@ -1,191 +1,143 @@
 package main;
 
+import java.util.Random;
+import java.util.Scanner;
 
+public class SurfMangaSimulator1 {
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.datatransfer.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.IOException;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.IOException;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
-public class SurfMangaSimulator1 extends JFrame {
-    private JLabel[] leftSurfers;
-    private JLabel[] rightSurfers;
-    private JLabel[] scoreBoxes;
-    private ImageIcon blankImage;
-    
-
-    private int filledScoreBoxes = 0; // Contador de cuadros de puntuación llenados
-
-    public SurfMangaSimulator1() {
-        super("Simulador de Manga de Surf");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 600);
-
-        initializeSurfers();
-        initializeScoreBoxes();
-
-        setLayout(new GridLayout(1, 5));
-
-        // Agrega los surfistas al panel
-        add(createSurfersPanel(leftSurfers));
-        add(createScorePanel());
-        add(createSurfersPanel(rightSurfers));
-
-        setLocationRelativeTo(null);
-        setVisible(true);
-    }
-
-    private void initializeSurfers() {
-        leftSurfers = new JLabel[8];
-        rightSurfers = new JLabel[8];
-
-        leftSurfers[0] = createSurferLabel("GabrielMedina");
-        leftSurfers[1] = createSurferLabel("CarissaMoore");
-        leftSurfers[2] = createSurferLabel("ItaloFerreira");
-        leftSurfers[3] = createSurferLabel("StephanieGilmore");
-        leftSurfers[4] = createSurferLabel("JordySmith");
-        leftSurfers[5] = createSurferLabel("SallyFitzgibbons");
-        leftSurfers[6] = createSurferLabel("KoloheAndino");
-        leftSurfers[7] = createSurferLabel("TatianaWeston");
-        rightSurfers[0] = createSurferLabel("JohnJohnFlorence");
-        rightSurfers[1] = createSurferLabel("ConnerCoffin");
-        rightSurfers[2] = createSurferLabel("TylerWright");
-        rightSurfers[3] = createSurferLabel("JulianWilson");
-        rightSurfers[4] = createSurferLabel("LakeyPeterson");
-        rightSurfers[5] = createSurferLabel("FilipeToledo");
-        rightSurfers[6] = createSurferLabel("JeremyFlores");
-        rightSurfers[7] = createSurferLabel("JackRobinson");
-    }
-
-    private JLabel createSurferLabel(String name) {
-    	JLabel surferLabel = new JLabel();
-    	
-    	if(name != "JordySmith" && name != "KoloheAndino") {
-    		ImageIcon imageIcon = new ImageIcon("surfworld\\img\\" + name + ".jpg");
-            Image image = imageIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
-            
-            surferLabel = new JLabel(new ImageIcon(image));
-            surferLabel.setText(name);
-            surferLabel.setHorizontalTextPosition(JLabel.CENTER);
-            surferLabel.setVerticalTextPosition(JLabel.BOTTOM);
-            
-            surferLabel.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    if (filledScoreBoxes < 3) {
-                        // Encuentra el próximo cuadro de puntuación vacío
-                        int nextScoreBoxIndex = getNextEmptyScoreBox();
-                        scoreBoxes[nextScoreBoxIndex].setIcon(new ImageIcon(image));
-                        filledScoreBoxes++;
-
-                        // Puedes almacenar información adicional sobre el surfista seleccionado
-                        // en algún lugar si es necesario
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Ya has llenado todos los cuadros.", "Alerta", JOptionPane.WARNING_MESSAGE);
-                    }
-                }
-            });
-    	}else {
-    		ImageIcon imageIcon = new ImageIcon("surfworld\\img\\" + name + ".jpeg");
-            Image image = imageIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
-            
-            surferLabel = new JLabel(new ImageIcon(image));
-            surferLabel.setText(name);
-            surferLabel.setHorizontalTextPosition(JLabel.CENTER);
-            surferLabel.setVerticalTextPosition(JLabel.BOTTOM);
-            
-            surferLabel.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    if (filledScoreBoxes < 3) {
-                        // Encuentra el próximo cuadro de puntuación vacío
-                        int nextScoreBoxIndex = getNextEmptyScoreBox();
-                        scoreBoxes[nextScoreBoxIndex].setIcon(new ImageIcon(image));
-                        filledScoreBoxes++;
-
-                        // Puedes almacenar información adicional sobre el surfista seleccionado
-                        // en algún lugar si es necesario
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Ya has llenado todos los cuadros.", "Alerta", JOptionPane.WARNING_MESSAGE);
-                    }
-                }
-            });
-    	}
-
-        
-
-        return surferLabel;
-    }
-
-    private void initializeScoreBoxes() {
-        scoreBoxes = new JLabel[3];
-        blankImage = new ImageIcon("path_to_image_directory/blank.jpg");
-
-        for (int i = 0; i < 3; i++) {
-            scoreBoxes[i] = new JLabel(blankImage, JLabel.CENTER);
-            scoreBoxes[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        }
-    }
-
-    private JPanel createSurfersPanel(JLabel[] surfers) {
-        JPanel panel = new JPanel(new GridLayout(2, 4));
-        for (JLabel surfer : surfers) {
-            panel.add(surfer);
-        }
-        return panel;
-    }
-
-    private JPanel createScorePanel() {
-        JPanel panel = new JPanel(new GridLayout(3, 1, 8, 30));
-        for (JLabel scoreBox : scoreBoxes) {
-            scoreBox.setPreferredSize(new Dimension(60, 60));
-            panel.add(scoreBox);
-        }
-        return panel;
-    }
-
-    private int getNextEmptyScoreBox() {
-        for (int i = 0; i < 3; i++) {
-            if (scoreBoxes[i].getIcon() == blankImage) {
-                return i;
-            }
-        }
-        return -1; // Si todos los cuadros están llenos
-    }
+    private static final int TAMANO_TABLERO = 5;
+    private static final int NUMERO_MINAS = 5;
+    private static char[][] tableroVisible;
+    private static char[][] tableroReal;
+    private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(SurfMangaSimulator1::new);
+        inicializarTablero();
+        colocarMinas();
+        jugar();
+    }
+
+    private static void inicializarTablero() {
+        tableroVisible = new char[TAMANO_TABLERO][TAMANO_TABLERO];
+        tableroReal = new char[TAMANO_TABLERO][TAMANO_TABLERO];
+
+        for (int i = 0; i < TAMANO_TABLERO; i++) {
+            for (int j = 0; j < TAMANO_TABLERO; j++) {
+                tableroVisible[i][j] = '-';
+                tableroReal[i][j] = ' ';
+            }
+        }
+    }
+
+    private static void colocarMinas() {
+        Random random = new Random();
+
+        for (int i = 0; i < NUMERO_MINAS; i++) {
+            int fila = random.nextInt(TAMANO_TABLERO);
+            int columna = random.nextInt(TAMANO_TABLERO);
+
+            // Evitar colocar minas en la misma celda
+            while (tableroReal[fila][columna] == '*') {
+                fila = random.nextInt(TAMANO_TABLERO);
+                columna = random.nextInt(TAMANO_TABLERO);
+            }
+
+            tableroReal[fila][columna] = '*';
+        }
+    }
+
+    private static void mostrarTablero(char[][] tablero) {
+        for (int i = 0; i < TAMANO_TABLERO; i++) {
+            for (int j = 0; j < TAMANO_TABLERO; j++) {
+                System.out.print(tablero[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    private static void jugar() {
+        int minasRestantes = NUMERO_MINAS;
+
+        while (minasRestantes > 0) {
+            System.out.println("Tablero Actual:");
+            mostrarTablero(tableroVisible);
+
+            System.out.print("Ingrese la fila (0-" + (TAMANO_TABLERO - 1) + "): ");
+            int fila = scanner.nextInt();
+
+            System.out.print("Ingrese la columna (0-" + (TAMANO_TABLERO - 1) + "): ");
+            int columna = scanner.nextInt();
+
+            if (fila < 0 || fila >= TAMANO_TABLERO || columna < 0 || columna >= TAMANO_TABLERO) {
+                System.out.println("Entrada inválida. Inténtelo de nuevo.");
+                continue;
+            }
+
+            if (tableroVisible[fila][columna] != '-') {
+                System.out.println("Esta celda ya ha sido seleccionada. Inténtelo de nuevo.");
+                continue;
+            }
+
+            if (tableroReal[fila][columna] == '*') {
+                System.out.println("¡Has golpeado una mina! Fin del juego.");
+                tableroVisible[fila][columna] = '*';
+                mostrarTablero(tableroVisible);
+                return;
+            } else {
+                // Contar minas cercanas
+                int minasCercanas = contarMinasCercanas(fila, columna);
+                tableroVisible[fila][columna] = (char) (minasCercanas + '0');
+
+                if (minasCercanas == 0) {
+                    // Si no hay minas cercanas, revelar celdas adyacentes
+                    revelarCeldasAdyacentes(fila, columna);
+                }
+            }
+
+            minasRestantes--;
+        }
+
+        System.out.println("¡Felicidades! Has ganado el juego.");
+    }
+
+    private static int contarMinasCercanas(int fila, int columna) {
+        int minasCercanas = 0;
+
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                int nuevaFila = fila + i;
+                int nuevaColumna = columna + j;
+
+                if (nuevaFila >= 0 && nuevaFila < TAMANO_TABLERO &&
+                        nuevaColumna >= 0 && nuevaColumna < TAMANO_TABLERO &&
+                        tableroReal[nuevaFila][nuevaColumna] == '*') {
+                    minasCercanas++;
+                }
+            }
+        }
+
+        return minasCercanas;
+    }
+
+    private static void revelarCeldasAdyacentes(int fila, int columna) {
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                int nuevaFila = fila + i;
+                int nuevaColumna = columna + j;
+
+                if (nuevaFila >= 0 && nuevaFila < TAMANO_TABLERO &&
+                        nuevaColumna >= 0 && nuevaColumna < TAMANO_TABLERO &&
+                        tableroVisible[nuevaFila][nuevaColumna] == '-') {
+                    int minasCercanas = contarMinasCercanas(nuevaFila, nuevaColumna);
+                    tableroVisible[nuevaFila][nuevaColumna] = (char) (minasCercanas + '0');
+
+                    if (minasCercanas == 0) {
+                        revelarCeldasAdyacentes(nuevaFila, nuevaColumna);
+                    }
+                }
+            }
+        }
     }
 }
+
 
