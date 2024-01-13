@@ -7,6 +7,14 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+/*Ahora quiero hacer la funcionalidad del boton competir. 
+ * Quiero asociar los surfistas que tengo, con las imagenes. T
+ * engo un metodo que se llama cargarSurfistas(), que carga los surfistas, 
+ * quiero asociar cada surfista a su imagen, para ello esta el nombre de cada surfista. 
+ * Es decir, un surfista tiene un nombre que se coge de la siguiente manera, 
+ * cargaSurfista.cargarSurfistas() que se mete en un arraylist de surfistas llamado surfista, 
+ * y coges surfista.getNombre(), pues para asociarlo tiene que ser igual al nombre de l
+ */
 
 
 public class SurfMangaSimulator extends JFrame {
