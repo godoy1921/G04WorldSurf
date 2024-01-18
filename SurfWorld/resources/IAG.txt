@@ -1,0 +1,12 @@
+//FUENTE-EXTERNA
+//URL: https://es.stackoverflow.com/questions/150118/como-poner-un-jcalendar-en-una-celda-de-un-jtable-en-java-swing
+//URL: https://www.youtube.com/watch?v=iFdwHahcQX4
+//URL: https://www.youtube.com/watch?v=ukYDs-DvBNk
+//URL: https://www.youtube.com/watch?v=ntirmRhy6Fw
+//URL: https://www.dit.upm.es/~santiago/docencia/apuntes/Swing/jlabelicon.htm
+//URL: https://www.sparknotes.com/cs/recursion/examples/section3/#:~:text=Recursive%20techniques%20can%20be%20utilized,here%20are%20Mergesort%20and%20Quicksort.
+
+
+//IAG chatGPT
+//FILE: https://chat.openai.com/share/44ca8567-fbaf-4cbb-b5f1-bce40a9c09a3
+//FILE: https://chat.openai.com/share/3341d934-779a-43c0-a141-92f28ab01061
