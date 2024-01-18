@@ -82,6 +82,9 @@ public class VentanaInicio extends JPanel {
         panel.add(bottomPanel, BorderLayout.SOUTH);
 
         add(panel);
+        
+        
+
 
         
         
@@ -93,6 +96,9 @@ public class VentanaInicio extends JPanel {
                     ArrayList<Surfista> surfistas = cargaSurfista.cargarSurfistas();
                     List<Evento> eventos = cargaEvento.cargarEventos();
                     comboBoxElementos.removeAllItems(); // Limpiar combobox antes de agregar nuevos elementos
+                    
+                    //Ordena los surfistas recursivamente dependiendo del puesto de ranking para desplegarlos enel combobox
+                    quicksort(surfistas, 0, surfistas.size() - 1);
                     for (Surfista surfista : surfistas) {
                         comboBoxElementos.addItem(surfista.getNombre()); // Agregar nombres de surfistas al combobox
                     }
@@ -199,10 +205,46 @@ public class VentanaInicio extends JPanel {
 
 
         setVisible(true);
+                
+    }
+    
+    
+    //Metodo recursivo para ordenar los surfistas por puestoRanking
+    public void quicksort(List<Surfista> surfistas, int inicio, int fin) {
+        if (inicio < fin) {
+            // Obtiene el índice de partición
+            int indiceParticion = particion(surfistas, inicio, fin);
+
+            // Recursivamente ordena las dos sublistas
+            quicksort(surfistas, inicio, indiceParticion - 1);
+            quicksort(surfistas, indiceParticion + 1, fin);
+        }
     }
 
-    // Métodos para cargar datos en JComboBox y mostrar detalles en JTable según la selección
-    // Implementa lógica para cargar surfistas, eventos y su visualización en las tablas
+    // Método de partición para quicksort
+    private int particion(List<Surfista> surfistas, int inicio, int fin) {
+        int pivote = surfistas.get(fin).getPuestoRanking();
+        int i = inicio - 1;
+
+        for (int j = inicio; j < fin; j++) {
+            if (surfistas.get(j).getPuestoRanking() <= pivote) {
+                i++;
+                intercambiar(surfistas, i, j);
+            }
+        }
+
+        intercambiar(surfistas, i + 1, fin);
+        return i + 1;
+    }
+
+    // Método para intercambiar dos elementos en la lista
+    private void intercambiar(List<Surfista> surfistas, int i, int j) {
+        Surfista temp = surfistas.get(i);
+        surfistas.set(i, surfistas.get(j));
+        surfistas.set(j, temp);
+    }
+
+   
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
